@@ -10,7 +10,6 @@ let grid_spacing = 0.05;
 let vertices = [];
 let cargatingz = [];
 var program;
-var newPoints = 0;
 
 function animate(time)
 {
@@ -51,11 +50,17 @@ function setup(shaders)
         }
     }
 
+    /**
+     * Create buffer
+     */
     const aBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, aBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec2"] + 
                                    MAX * MV.sizeof["vec2"], gl.STATIC_DRAW);
 
+    /**
+     * Place vertice array in buffer
+     */
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, MV.flatten(vertices));
 
     const vPosition = gl.getAttribLocation(program, "vPosition");
@@ -65,6 +70,9 @@ function setup(shaders)
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     
     window.requestAnimationFrame(animate);
+
+
+    // FUNCTIONS
 
     window.addEventListener("resize", function (event) {
         canvas.width = window.innerWidth;
@@ -87,7 +95,6 @@ function setup(shaders)
         }
     });
 
-
     window.addEventListener("keyup", function(event) {
         switch (event.keyCode) {
             case 16:
@@ -96,13 +103,16 @@ function setup(shaders)
         }
     });
 
-
     canvas.addEventListener("click", function(event) {
         
         // Start by getting x and y coordinates inside the canvas element
         const x = (((event.offsetX / canvas.width) * 2) - 1) * table_width/2.0;
         const y = (- (((event.offsetY / canvas.height) * 2) - 1)) * table_height/2.0;
         
+        /**
+        * Place cargatingz array in buffer
+        */
+
         gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec2"] + (cargatingz.length % MAX) * 
                         MV.sizeof["vec2"], MV.flatten(MV.vec2(x,y)));
 
@@ -111,8 +121,6 @@ function setup(shaders)
         const vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(vPosition);
-
-        newPoints = newPoints + 1;
 
     });
 }
