@@ -10,40 +10,35 @@ let grid_spacing = 0.05;
 let vertices = [];
 let cargatingz = [];
 var program;
-var uTheta = 0.0;
-var prot = 0;
-var elet = 0;
+var rot = 0.0;
 
 function animate(time)
 {
-    window.requestAnimationFrame(animate);
     
     gl.clear(gl.COLOR_BUFFER_BIT);
+
     gl.useProgram(program);
 
-    const uTable_dim_height = gl.getUniformLocation(program, "table_dim_height");
-    gl.uniform1f(uTable_dim_height,  table_height/2.0);
-
-    const utable_dim_width = gl.getUniformLocation(program, "table_dim_width");
-    gl.uniform1f(utable_dim_width,  table_width/2.0);
+    const uTable_dim = gl.getUniformLocation(program, "table_dim");
+    gl.uniform2f(uTable_dim, table_width/2.0, table_height/2.0);
 
     const colorloc = gl.getUniformLocation(program, "color");
-    const uThetaX = gl.getUniformLocation(program, "uTheta");
-    
-    gl.uniform1f(uThetaX, uTheta);
-    gl.uniform4fv(colorloc, [0.0, 1.0, 0.0, 1.0]);
-    gl.drawArrays(gl.POINTS, vertices.length, prot);
-
-    gl.uniform1f(uThetaX, -uTheta);
-    gl.uniform4fv(colorloc, [1.0, 0.0, 0.0, 1.0]);
-    gl.drawArrays(gl.POINTS, vertices.length + prot, elet);
-
-    uTheta += 0.02;
-
-    gl.uniform1f(uThetaX, 0);
 /**
     gl.uniform4fv(colorloc, [0.7, 0.0, 0.0, 0.3]);
-    gl.drawArrays(gl.POINTS, 0, vertices.length); */
+    gl.drawArrays(gl.POINTS, 0, vertices.length);
+*/
+    var location = gl.getUniformLocation(program,"uPosition");
+    gl.uniform3fv(location, cargatingz);
+
+    const utheta = gl.getUniformLocation(program, "utheta");
+    gl.uniform1f(utheta, rot);
+
+    rot += 0.05;
+
+    gl.uniform4fv(colorloc, [0.3, 0.4, 0.2, 1.0]);
+    gl.drawArrays(gl.POINTS, vertices.length, Math.min(cargatingz.length), MAX);
+
+    window.requestAnimationFrame(animate);
 }
 
 function setup(shaders)
@@ -133,13 +128,7 @@ function setup(shaders)
         gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec2"] + (cargatingz.length % MAX) * 
                         MV.sizeof["vec2"], MV.flatten(MV.vec2(x,y)));
 
-        if(upOrDawn) {
-            cargatingz.unshift(MV.vec2(x, y));
-            prot += 1;
-        } else {
-            cargatingz.push(MV.vec2(x, y))
-            elet += 1;
-        }
+        cargatingz.push(MV.vec2(x, y));
 
         const vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
