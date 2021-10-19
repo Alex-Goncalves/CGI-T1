@@ -7,7 +7,7 @@ void main()
 {
     float s = sin( uTheta );
     float c = cos( uTheta );
-    gl_PointSize = 4.0;
+    gl_PointSize = 8.0;
     gl_Position.x = -s * vPosition.y/table_dim_height + c * vPosition.x/table_dim_width;
     gl_Position.y = s * vPosition.x/table_dim_width + c * vPosition.y/table_dim_height;
     gl_Position.z = 0.0;

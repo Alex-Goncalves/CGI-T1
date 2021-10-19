@@ -11,6 +11,8 @@ let vertices = [];
 let cargatingz = [];
 var program;
 var uTheta = 0.0;
+var prot = 0;
+var elet = 0;
 
 function animate(time)
 {
@@ -29,15 +31,19 @@ function animate(time)
     const uThetaX = gl.getUniformLocation(program, "uTheta");
     
     gl.uniform1f(uThetaX, uTheta);
+    gl.uniform4fv(colorloc, [0.0, 1.0, 0.0, 1.0]);
+    gl.drawArrays(gl.POINTS, vertices.length, prot);
+
+    gl.uniform1f(uThetaX, -uTheta);
+    gl.uniform4fv(colorloc, [1.0, 0.0, 0.0, 1.0]);
+    gl.drawArrays(gl.POINTS, vertices.length + prot, elet);
+
     uTheta += 0.02;
 
-    gl.uniform4fv(colorloc, [0.3, 0.4, 0.2, 1.0]);
-    gl.drawArrays(gl.POINTS, vertices.length, Math.min(cargatingz.length), MAX);
-
     gl.uniform1f(uThetaX, 0);
-
+/**
     gl.uniform4fv(colorloc, [0.7, 0.0, 0.0, 0.3]);
-    gl.drawArrays(gl.POINTS, 0, vertices.length);
+    gl.drawArrays(gl.POINTS, 0, vertices.length); */
 }
 
 function setup(shaders)
@@ -128,8 +134,12 @@ function setup(shaders)
                         MV.sizeof["vec2"], MV.flatten(MV.vec2(x,y)));
 
         if(upOrDawn) {
-            cargatingz.push(MV.vec3(x, y, 1))
-        } else cargatingz.push(MV.vec3(x, y, -1))
+            cargatingz.unshift(MV.vec2(x, y));
+            prot += 1;
+        } else {
+            cargatingz.push(MV.vec2(x, y))
+            elet += 1;
+        }
 
         const vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
