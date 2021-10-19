@@ -38,8 +38,6 @@ function animate(time)
 
     gl.uniform4fv(colorloc, [0.7, 0.0, 0.0, 0.3]);
     gl.drawArrays(gl.POINTS, 0, vertices.length);
-
-    
 }
 
 function setup(shaders)
@@ -129,7 +127,9 @@ function setup(shaders)
         gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec2"] + (cargatingz.length % MAX) * 
                         MV.sizeof["vec2"], MV.flatten(MV.vec2(x,y)));
 
-        cargatingz.push(MV.vec2(x, y));
+        if(upOrDawn) {
+            cargatingz.push(MV.vec3(x, y, 1))
+        } else cargatingz.push(MV.vec3(x, y, -1))
 
         const vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
