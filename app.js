@@ -4,41 +4,56 @@ import * as MV from '../../libs/MV.js'
 /** @type {WebGLRenderingContext} */
 let gl;
 const table_width = 3.0;
-const MAX = 25;
+const MAX = 200;
 let table_height;
 let grid_spacing = 0.05;
 let vertices = [];
 let cargatingz = [];
 var program;
-var rot = 0.0;
+var uTheta = 0.0;
+var prot = 0;
+var elet = 0;
+var spaceUpOrDawn = true;
 
 function animate(time)
 {
+    window.requestAnimationFrame(animate);
     
     gl.clear(gl.COLOR_BUFFER_BIT);
-
     gl.useProgram(program);
 
-    const uTable_dim = gl.getUniformLocation(program, "table_dim");
-    gl.uniform2f(uTable_dim, table_width/2.0, table_height/2.0);
+    const uTable_dim_height = gl.getUniformLocation(program, "table_dim_height");
+    gl.uniform1f(uTable_dim_height,  table_height/2.0);
+
+    const utable_dim_width = gl.getUniformLocation(program, "table_dim_width");
+    gl.uniform1f(utable_dim_width,  table_width/2.0);
 
     const colorloc = gl.getUniformLocation(program, "color");
-/**
+    const uThetaX = gl.getUniformLocation(program, "uTheta");
+    const usize = gl.getUniformLocation(program, "size");
+    
+
+    gl.uniform1f(uThetaX, uTheta);
+    gl.uniform4fv(colorloc, [0.0, 1.0, 0.0, 1.0]);
+    gl.uniform1f(usize, 8.0);
+    if(spaceUpOrDawn)
+        gl.drawArrays(gl.POINTS, vertices.length, prot);
+
+    
+    gl.uniform1f(uThetaX, -uTheta);
+    gl.uniform4fv(colorloc, [1.0, 0.0, 0.0, 1.0]);
+    if(spaceUpOrDawn)
+        gl.drawArrays(gl.POINTS, vertices.length + prot, elet);
+
+    uTheta += 0.02;
+
+    console.log(cargatingz.length);
+
+    gl.uniform1f(uThetaX, 0);
+
     gl.uniform4fv(colorloc, [0.7, 0.0, 0.0, 0.3]);
+    gl.uniform1f(usize, 4.0);
     gl.drawArrays(gl.POINTS, 0, vertices.length);
-*/
-    var location = gl.getUniformLocation(program,"uPosition");
-    gl.uniform3fv(location, cargatingz);
-
-    const utheta = gl.getUniformLocation(program, "utheta");
-    gl.uniform1f(utheta, rot);
-
-    rot += 0.05;
-
-    gl.uniform4fv(colorloc, [0.3, 0.4, 0.2, 1.0]);
-    gl.drawArrays(gl.POINTS, vertices.length, Math.min(cargatingz.length), MAX);
-
-    window.requestAnimationFrame(animate);
 }
 
 function setup(shaders)
@@ -99,8 +114,6 @@ function setup(shaders)
 
     window.addEventListener("keydown", function(event) {
         switch (event.keyCode) {
-            case 32:
-                break;
             case 16:
                 upOrDawn = false;
                 break;
@@ -109,6 +122,10 @@ function setup(shaders)
 
     window.addEventListener("keyup", function(event) {
         switch (event.keyCode) {
+            case 32:
+                if(spaceUpOrDawn) spaceUpOrDawn = false;
+                else spaceUpOrDawn = true;
+                break;
             case 16:
                 upOrDawn = true;
                 break;
@@ -128,7 +145,15 @@ function setup(shaders)
         gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec2"] + (cargatingz.length % MAX) * 
                         MV.sizeof["vec2"], MV.flatten(MV.vec2(x,y)));
 
-        cargatingz.push(MV.vec2(x, y));
+        if(upOrDawn) {
+            cargatingz.splice(0, 0, MV.vec2(x, y));
+            prot += 1;
+            console.log("neg");
+        } else {
+            cargatingz.push(MV.vec2(x, y));
+            elet += 1;
+            console.log("pos");
+        }
 
         const vPosition = gl.getAttribLocation(program, "vPosition");
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
