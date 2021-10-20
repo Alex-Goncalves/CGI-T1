@@ -61,11 +61,11 @@ function drawCharges() {
     gl.uniform1f(utable_dim_width,  table_width/2.0);
     
     gl.uniform1f(usize, 8.0);
+    
+    uTheta = -0.02;
 
     var s = Math.sin( uTheta );
     var c = Math.cos( uTheta );
-
-    uTheta = 0.02;
 
     for(let i = 0; i < protatingz.length; i++) {
         var x = (-s * protatingz[i][1] + c * protatingz[i][0]);
@@ -73,7 +73,10 @@ function drawCharges() {
         protatingz.splice(i, 1, MV.vec2(x, y));
     }
 
-    uTheta = -0.02;
+    uTheta = 0.02;
+
+    var s = Math.sin( uTheta );
+    var c = Math.cos( uTheta );
 
     for(let i = 0; i < eletratingz.length; i++) {
         var x = (-s * eletratingz[i][1] + c * eletratingz[i][0]);
