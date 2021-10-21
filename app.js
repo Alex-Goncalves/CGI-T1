@@ -58,8 +58,8 @@ function drawCharges() {
     const utable_dim_width = gl.getUniformLocation(program2, "table_dim_width");
     gl.uniform1f(utable_dim_width,  table_width/2.0);
 
-    var s = Math.sin( -uTheta );
-    var c = Math.cos( -uTheta );
+    var s = Math.sin( uTheta );
+    var c = Math.cos( uTheta );
 
     for(let i = 0; i < protatingz.length; i++) {
         var x = (-s * protatingz[i][1] + c * protatingz[i][0]);
@@ -67,8 +67,8 @@ function drawCharges() {
         protatingz.splice(i, 1, MV.vec3(x, y, 1));
     }
 
-    var s = Math.sin( uTheta );
-    var c = Math.cos( uTheta );
+    var s = Math.sin( -uTheta );
+    var c = Math.cos( -uTheta );
 
     for(let i = 0; i < eletratingz.length; i++) {
         var x = (-s * eletratingz[i][1] + c * eletratingz[i][0]);
@@ -107,8 +107,8 @@ function setup(shaders) {
 
     for(let x = (-(table_width/2) + grid_spacing); x <= (table_width/2); x += grid_spacing) {
         for(let y = -(table_height/2); y <= (table_height/2); y += grid_spacing) {
-            vertices.push(MV.vec3(x + Math.random() * 0.004, y + Math.random() * 0.004, 0));
-            vertices.push(MV.vec3(x, y, 1));
+            vertices.push(MV.vec3(x + (Math.random() - 0.5)* 0.009, y + (Math.random() - 0.5) * 0.009, 1));
+            vertices.push(MV.vec3(x + (Math.random() - 0.5)* 0.009, y + (Math.random() - 0.5) * 0.009, 0));
         }
     }
 

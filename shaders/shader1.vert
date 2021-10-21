@@ -54,7 +54,10 @@ void main() {
         totalDirections = normalDirection * 0.25;
 
     gl_PointSize = 4.0;
-    gl_Position = vec4((vPosition.x + totalDirections.x)/table_dim_width, (vPosition.y + totalDirections.y)/table_dim_height, 0.0, 1.0);
+    gl_Position.x = (vPosition.x + totalDirections.x)/table_dim_width;
+    gl_Position.y = (vPosition.y + totalDirections.y)/table_dim_height;
+    gl_Position.z = 0.0;
+    gl_Position.w = 1.0;
     color = colorize(vec2(totalDirections.x, totalDirections.y));  
 }
 
