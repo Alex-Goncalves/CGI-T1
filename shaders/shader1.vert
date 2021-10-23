@@ -16,8 +16,6 @@ vec3 angle_to_hue(float angle) {
   return clamp((abs(fract(angle+vec3(3.0, 2.0, 1.0)/3.0)*6.0-3.0)-1.0), 0.0, 1.0);
 }
 
-
-
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
@@ -57,11 +55,10 @@ void main() {
         gl_Position.x = (vPosition.x + totalDirections.x)/table_dim_width;
         gl_Position.y = (vPosition.y + totalDirections.y)/table_dim_height;
     } else {
-        color = vec4(0.0, 0.0, 0.0, 1.0); 
+        color = vec4(0.0, 0.0, 0.0, 0.0); 
         gl_Position.x = vPosition.x/table_dim_width;
         gl_Position.y = vPosition.y/table_dim_height;
     }
     gl_Position.z = 0.0;
     gl_Position.w = 1.0; 
 }
-

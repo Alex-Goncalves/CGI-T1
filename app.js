@@ -16,7 +16,7 @@ let eletratingz = [];
 var program;
 var program2;
 
-var uTheta = 0.02;
+var uTheta = 0.015;
 var spaceUpOrDawn = true;
 
 function animate(time) {
@@ -135,6 +135,9 @@ function setup(shaders) {
         table_height = (table_width * canvas.height / canvas.width);
     });
 
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     var upOrDawn = true;
 
     window.addEventListener("keydown", function(event) {
@@ -170,15 +173,8 @@ function setup(shaders) {
                 gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec3"] + MAX * MV.sizeof["vec3"] + (eletratingz.length % MAX) * MV.sizeof["vec3"], MV.flatten(MV.vec3(x,y, -1)));
                 eletratingz.push(MV.vec3(x, y, -1));
                 console.log("neg");
-            }
-            cont ++;
+            } cont ++;
         }
-
-        const vPosition = gl.getAttribLocation(program2, "vPosition");
-        gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(vPosition);
-
     });
 }
-
 UTILS.loadShadersFromURLS(["shader1.vert", "shader2.vert", "shader1.frag", "shader2.frag"]).then(s => setup(s));
