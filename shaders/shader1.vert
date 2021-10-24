@@ -38,18 +38,19 @@ void main() {
 
             normalDirection = normalize(direction);
 
-            float campueEletric = (Coloumb * uPosition[i].z ) / (distance(vec2(vPosition.x, vPosition.y), vec2(uPosition[i].x, uPosition[i].y)));
+            float campueEletric = (Coloumb * uPosition[i].z ) / 
+                ((distance(vec2(vPosition.x, vPosition.y), vec2(uPosition[i].x, uPosition[i].y)) * 
+                (distance(vec2(vPosition.x, vPosition.y), vec2(uPosition[i].x, uPosition[i].y)))));
 
             normalDirection = normalDirection * campueEletric;
 
             totalDirections = totalDirections +  normalDirection;
         }
 
-    totalDirections = totalDirections *0.000000000007;
+    totalDirections = totalDirections *0.000000000001;
     if(sqrt((totalDirections.x * totalDirections.x) + (totalDirections.y * totalDirections.y)) > 0.25)
         totalDirections = normalize(totalDirections) * 0.25;
 
-    gl_PointSize = 4.0;
     if(vPosition.z == 0.0) {
         color = colorize(vec2(totalDirections.x, totalDirections.y)); 
         gl_Position.x = (vPosition.x + totalDirections.x)/table_dim_width;

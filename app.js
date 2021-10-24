@@ -3,18 +3,19 @@ import * as MV from '../../libs/MV.js'
 
 /** @type {WebGLRenderingContext} */
 let gl;
-const table_width = 3.0;
+var program;
+var program2;
+
 let cont = 0;
 const MAX = 26;
+
+const table_width = 3.0;
 let table_height;
 let grid_spacing = 0.05;
 
 let vertices = [];
 let protatingz = [];
 let eletratingz = [];
-
-var program;
-var program2;
 
 var uTheta = 0.015;
 var spaceUpOrDawn = true;
@@ -116,7 +117,6 @@ function setup(shaders) {
     gl.bindBuffer(gl.ARRAY_BUFFER, aBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec3"] + 
                                    MAX * MV.sizeof["vec3"] + MAX * MV.sizeof["vec3"], gl.STATIC_DRAW);
-
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, MV.flatten(vertices));
 
     const vPosition = gl.getAttribLocation(program, "vPosition");
@@ -168,11 +168,9 @@ function setup(shaders) {
             if(upOrDawn) {
                 gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec3"] + (protatingz.length % MAX) * MV.sizeof["vec3"], MV.flatten(MV.vec3(x,y, 1)));
                 protatingz.push(MV.vec3(x, y, 1));
-                console.log("pos");
             } else {
                 gl.bufferSubData(gl.ARRAY_BUFFER, vertices.length * MV.sizeof["vec3"] + MAX * MV.sizeof["vec3"] + (eletratingz.length % MAX) * MV.sizeof["vec3"], MV.flatten(MV.vec3(x,y, -1)));
                 eletratingz.push(MV.vec3(x, y, -1));
-                console.log("neg");
             } cont ++;
         }
     });
