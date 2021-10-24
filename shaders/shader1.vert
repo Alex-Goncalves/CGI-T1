@@ -1,10 +1,10 @@
+attribute vec4 vPosition;
 uniform float table_dim_height;
 uniform float table_dim_width;
-attribute vec4 vPosition;
-const int MAX_CHARGES=26;
 uniform vec3 uPosition[MAX_CHARGES];
+varying vec4 color;
+const int MAX_CHARGES=26;
 const float Coloumb = 8.988e9;
-varying vec4 color; 
 
 #define TWOPI 6.28318530718
 
